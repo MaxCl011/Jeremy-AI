@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+from litellm import completion
 from openai import OpenAI
 from pymsgbox import prompt
 
@@ -24,58 +25,64 @@ def TestParameters():
     
 
     master_prompt = input("Enter master prompt: ")
-    user_question = input("Whats on your mind? (CUSTON PARAMS): ")
+
+    messages = [{"role": "system", "content": master_prompt}]
 
     while True:
         user_question = input("Whats on your mind? (CUSTOM PARAMS): ")
-
     
+        if user_question.lower() == "exit":
+            break
 
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": master_prompt},
-            {"role": "user", "content": user_question}
-            ],
+        messages.append({"role": "user", "content": user_question})
 
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages,
 
         
-        temperature=temp,
-        top_p=0.7,
-        max_tokens=tokens,
-        stream=False
-    )
+            temperature=temp,
+            top_p=0.7,
+            max_tokens=tokens,
+            stream=False
+        )
 
-    print(completion.choices[0].message.content)
+        assistant_response = completion.choices[0].message.content
+
+        print(assistant_response)
+
+        messages.append({"role": "assistant", "content": assistant_response})
 
 
 
 
 def ask_question():
-
     master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner."
+    messages = [{"role": "system", "content": master_prompt}]
 
-    user_question = input("Whats on your mind?: ")
+    while True:
+        user_question = input("Whats on your mind?: ")
 
-    if user_question == "test params":
-        TestParameters()
+        if user_question == "test params":
+            TestParameters()
+
+        messages.append({"role": "user", "content": user_question})
     
-    print(f"User Input: {user_question}\n")
+        print(f"User Input: {user_question}\n")
 
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": master_prompt},
-            {"role": "user", "content": user_question}
-            ],
-        temperature=0.2,
-        top_p=0.7,
-        max_tokens=1024,
-        stream=False
-    )
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages,
+            temperature=0.2,
+            top_p=0.7,
+            max_tokens=1024,
+            stream=False
+        )
 
-    print(completion.choices[0].message.content)
+        assistant_response = completion.choices[0].message.content
 
+        print(assistant_response)
 
-while True:
-    ask_question()
+        messages.append({"role": "assistant", "content": assistant_response})
+
+ask_question()
