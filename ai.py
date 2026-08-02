@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
+from pymsgbox import prompt
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 env_path = os.path.join(script_dir, '.env')
@@ -17,16 +18,16 @@ client = OpenAI(
     timeout=30
 )
 
-
 def TestParameters():
     temp = float(input("Enter temperature: "))
     tokens = int(input("Enter max tokens: "))
+    
 
-    master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner."
-
+    master_prompt = input("Enter master prompt: ")
     user_question = input("Whats on your mind? (CUSTON PARAMS): ")
 
-    
+    while True:
+        user_question = input("Whats on your mind? (CUSTOM PARAMS): ")
 
     
 
