@@ -18,17 +18,47 @@ client = OpenAI(
 )
 
 
+def TestParameters():
+    temp = float(input("Enter temperature: "))
+    tokens = int(input("Enter max tokens: "))
+
+    master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner."
+
+    user_question = input("Whats on your mind? (CUSTON PARAMS): ")
+
+    
+
+    
+
+    completion = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "user", "content": master_prompt},
+            {"role": "user", "content": user_question}
+            ],
+
+
+        
+        temperature=temp,
+        top_p=0.7,
+        max_tokens=tokens,
+        stream=False
+    )
+
+    print(completion.choices[0].message.content)
+
+
+
 
 def ask_question():
 
-    master_prompt = "You are a helpful assistant. talk as spongebob"
+    master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner."
 
     user_question = input("Whats on your mind?: ")
 
-    if user_question == "admin_mode":
-        print("Admin mode activated. You can now enter any question without restrictions.")
-        pass
-
+    if user_question == "test params":
+        TestParameters()
+    
     print(f"User Input: {user_question}\n")
 
     completion = client.chat.completions.create(
@@ -48,4 +78,3 @@ def ask_question():
 
 while True:
     ask_question()
-
