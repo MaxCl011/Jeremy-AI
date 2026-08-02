@@ -19,6 +19,38 @@ client = OpenAI(
     timeout=30
 )
 
+def ModelChange():
+    master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner. You are Jeremy an A.I assistant created by Max Clayton who is the CEO of MaxINK"
+    messages = [{"role": "system", "content": master_prompt}]
+
+    ModelChanged = prompt("Enter the model you want to use (llama-3.3-70b-versatile,): ")
+    
+    while True:
+            user_question = input("Whats on your mind?: ")
+    
+            if user_question == "test params":
+                TestParameters()
+
+            messages.append({"role": "user", "content": user_question})
+        
+            print(f"User Input: {user_question}\n")
+    
+            completion = client.chat.completions.create(
+                model=ModelChanged,
+                messages=messages,
+                temperature=0.2,
+                top_p=0.7,
+                max_tokens=1024,
+                stream=False
+            )
+    
+            assistant_response = completion.choices[0].message.content
+    
+            print(assistant_response)
+    
+            messages.append({"role": "assistant", "content": assistant_response})
+    
+
 def TestParameters():
     temp = float(input("Enter temperature: "))
     tokens = int(input("Enter max tokens: "))
@@ -57,7 +89,7 @@ def TestParameters():
 
 
 def ask_question():
-    master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner."
+    master_prompt = "You are a helpful assistant. Talk as a consise assistant. Answer in a concise manner. You are Jeremy an A.I assistant created by Max Clayton who is the CEO of MaxINK"
     messages = [{"role": "system", "content": master_prompt}]
 
     while True:
@@ -84,5 +116,9 @@ def ask_question():
         print(assistant_response)
 
         messages.append({"role": "assistant", "content": assistant_response})
+
+        if assistant_response.lower() == "model change":
+            ModelChange()
+            break
 
 ask_question()
